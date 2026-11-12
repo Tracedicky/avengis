@@ -7,28 +7,43 @@
 <meta name="description" content="Avengis Games: hand-made pixel games by Aven, a solo developer in the UK. Rebounded, Rebounded: Pocket Edition and The Dugout.">
 <meta property="og:title" content="Avengis Games">
 <meta property="og:description" content="Hand-made pixel games by Aven, a solo developer in the UK.">
-<meta property="og:image" content="https://tracedicky.github.io/avengis/img/rebounded_title.jpg">
-<link rel="icon" href="img/dugout_icon.png">
+<meta property="og:image" content="https://tracedicky.github.io/avengis/art/share.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AVENGIS GAMES in gold bricks over Coppercloud's harbour: brick by brick">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="32x32" href="art/icon.png">
+<link rel="icon" type="image/png" sizes="64x64" href="art/icon64.png">
+<link rel="apple-touch-icon" href="art/icon180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+<script>try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches&&!sessionStorage.getItem("avengis-built")){document.documentElement.classList.add("building");window.buildSafety=setTimeout(function(){document.documentElement.classList.remove("building")},5000)}}catch(e){}</script>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header class="wrap top">
-  <a class="brand" href="./">AVENGIS <span>GAMES</span></a>
-  <nav class="nav" aria-label="Main">
-    <a href="./" aria-current="page">HOME</a>
-    <a href="#games">GAMES</a>
-    <a href="about.html">ABOUT</a>
-  </nav>
+<header class="sky">
+  <canvas class="scene" data-scene="coppercloud-harbour" data-water="coppercloud" aria-hidden="true"></canvas>
+  <div class="wrap top">
+    <a class="brand" href="./">AVENGIS <span>GAMES</span></a>
+    <nav class="nav" aria-label="Main">
+      <a href="./" aria-current="page">HOME</a>
+      <a href="#games">GAMES</a>
+      <a href="about.html">ABOUT</a>
+    </nav>
+  </div>
+  <div class="wrap sky-title">
+    <h1 class="mark">
+      <span class="logo shine big"><img src="art/logo_avengis.png" width="269" height="38" alt="AVENGIS"><i class="glint" style="-webkit-mask-image:url(art/logo_avengis.png);mask-image:url(art/logo_avengis.png)"></i></span>
+      <span class="logo shine small"><img src="art/logo_games.png" width="129" height="30" alt="GAMES"><i class="glint" style="-webkit-mask-image:url(art/logo_games.png);mask-image:url(art/logo_games.png)"></i></span>
+    </h1>
+    <p class="tagline"><span class="logo shine"><img src="art/tagline.png" width="184" height="18" alt="Brick by brick"><i class="glint" style="-webkit-mask-image:url(art/tagline.png);mask-image:url(art/tagline.png)"></i></span></p>
+  </div>
 </header>
 
 <main>
   <section class="wrap hero">
-    <h1>AVENGIS GAMES</h1>
-    <p class="lead">Hand-made pixel games by Aven, a solo developer in the UK. Brick breakers where the water is alive, and a mine you bash your way down.</p>
     <figure class="film board moss">
       <video controls muted autoplay loop playsinline preload="metadata" poster="media/montage_poster.jpg">
         <source src="media/montage.mp4" type="video/mp4">
@@ -39,18 +54,22 @@
 
   <div class="bricks" role="presentation"></div>
 
-  <section class="wrap games" id="games">
-    <h2 class="section-title">THE GAMES</h2>
-    <p class="section-note">Three games, every brick, sprite and menu drawn for the game it lives in.</p>
+  <section class="games" id="games">
+    <div class="wrap">
+      <h2 class="section-title">THE GAMES</h2>
+      <p class="section-note">Three games, every brick, sprite and menu drawn for the game it lives in.</p>
+    </div>
 
-    <article class="game">
+    <div class="world" id="rebounded">
+    <canvas class="scene" data-scene="stormglass-peaks" aria-hidden="true"></canvas>
+    <article class="wrap game">
       <div class="shots wide">
         <img src="img/rebounded_title.jpg" width="1280" height="720" alt="Juno breaking bricks over the clouds: break the bricks, outrun the flood">
         <img src="img/rebounded_2.jpg" width="960" height="540" alt="Nell facing a living boss warden ringed by orbiting bricks" loading="lazy">
         <img src="img/rebounded_3.jpg" width="960" height="540" alt="Two players sharing a wall of bricks in Twin co-op" loading="lazy">
       </div>
       <div>
-        <h3>REBOUNDED</h3>
+        <h3 class="logo shine"><img src="art/logo_rebounded.png" width="229" height="30" alt="REBOUNDED"><i class="glint" style="-webkit-mask-image:url(art/logo_rebounded.png);mask-image:url(art/logo_rebounded.png)"></i></h3>
         <p class="platform">PC (WINDOWS)</p>
         <p>A brick breaker where the water is alive. Break a tank and the water pours out, fills the level and lifts your deck with it, so every level plays differently depending on what you break.</p>
         <p>Five heroes with their own powers, six worlds, living boss wardens, The Flood climb, and Versus on arcade tables.</p>
@@ -58,15 +77,25 @@
         <a class="status quiet" href="https://youtu.be/Myf04rydvFA">WATCH THE TRAILER</a>
       </div>
     </article>
+    <div class="wrap crew" aria-label="The crew">
+      <figure style="--hero:#52c8be"><span class="crew-anim" style="background-image:url(art/crew_juno.png)"></span><figcaption>JUNO</figcaption></figure>
+      <figure style="--hero:#eba960"><span class="crew-anim" style="background-image:url(art/crew_rook.png)"></span><figcaption>ROOK</figcaption></figure>
+      <figure style="--hero:#8adb89"><span class="crew-anim" style="background-image:url(art/crew_rowan.png)"></span><figcaption>ROWAN</figcaption></figure>
+      <figure style="--hero:#7cbceb"><span class="crew-anim" style="background-image:url(art/crew_mira.png)"></span><figcaption>MIRA</figcaption></figure>
+      <figure style="--hero:#bc93db"><span class="crew-anim" style="background-image:url(art/crew_nell.png)"></span><figcaption>NELL</figcaption></figure>
+    </div>
+    </div>
 
-    <article class="game flip">
+    <div class="world" id="pocket">
+    <canvas class="scene" data-scene="tideglass-above" data-water="tideglass" aria-hidden="true"></canvas>
+    <article class="wrap game flip">
       <div class="shots tall">
         <img src="img/pocket_1.jpg" width="405" height="720" alt="The Steamstrider warden beaten, on a phone screen" loading="lazy">
         <img src="img/pocket_2.jpg" width="405" height="720" alt="The Brimstone warden swinging on its chains" loading="lazy">
         <img src="img/pocket_3.jpg" width="405" height="720" alt="Versus on the football table" loading="lazy">
       </div>
       <div>
-        <h3>REBOUNDED: POCKET EDITION</h3>
+        <h3><span class="logo shine"><img src="art/logo_rebounded.png" width="229" height="30" alt="REBOUNDED:"><i class="glint" style="-webkit-mask-image:url(art/logo_rebounded.png);mask-image:url(art/logo_rebounded.png)"></i></span> <span class="edition">POCKET EDITION</span></h3>
         <p class="platform">ANDROID</p>
         <p>Rebounded rebuilt for your phone and played with your thumbs: The Flood climb through six sectors, the boss wardens, Versus for two on one phone, and a deck painter where you design your own paddle and share it with a code.</p>
         <p>Free to try, with one unlock for the full game. No ads.</p>
@@ -74,21 +103,24 @@
         <span class="status quiet">COMING SOON TO GOOGLE PLAY</span>
       </div>
     </article>
+    </div>
 
-    <article class="game">
+    <div class="world cave" id="dugout">
+    <article class="wrap game">
       <div class="shots tall">
         <img src="img/dugout_1.png" width="540" height="1170" alt="A flooded pocket of the mine with ore in the rock" loading="lazy">
         <img src="img/dugout_2.png" width="540" height="1170" alt="Purple crystals glowing deep in the mine" loading="lazy">
         <img src="img/dugout_3.png" width="540" height="1170" alt="Riches found beside an old miners' camp" loading="lazy">
       </div>
       <div>
-        <h3>THE DUGOUT</h3>
+        <h3 class="sign board moss"><img src="art/dugout_title.png" width="116" height="30" alt="THE DUGOUT: DOWN THE OLD MINE"></h3>
         <p class="platform">ANDROID</p>
         <p>Down an abandoned mine, a ball bashing its way: a roguelike of ore, biomes and buried treasure. Fling into the rock to break it, bounce off the walls, bank what you find and build up the town above.</p>
         <p>The deeper you go the stranger it gets: crystal nests, flooded cisterns, collapsing tunnels and guardians to smash to bits.</p>
-        <span class="status quiet">IN DEVELOPMENT</span>
+        <span class="status">IN DEVELOPMENT</span>
       </div>
     </article>
+    </div>
   </section>
 
   <section class="wrap ways">
@@ -123,6 +155,7 @@
 </main>
 
 <footer class="foot">
+  <div class="flood" aria-hidden="true"><i></i></div>
   <div class="wrap">
     <p><a class="brand" href="./">AVENGIS <span>GAMES</span></a></p>
     <p>&copy; 2026 Avengis Games. Made in the UK.</p>
@@ -130,5 +163,9 @@
   </div>
 </footer>
 
+<script src="js/scene.js" defer></script>
+<script src="js/build.js" defer></script>
+<script src="js/bricks.js" defer></script>
+<script src="js/flood.js" defer></script>
 </body>
 </html>

@@ -55,6 +55,16 @@ a:hover { color: #fff1c4; }
   background: url(img/bricks.png) repeat-x 0 0 / 960px 24px;
   image-rendering: pixelated;
   margin: 0;
+  position: relative; overflow: hidden;
+}
+.bricks.live { background: none; overflow: visible; overflow-x: clip; cursor: pointer; }  /* (js/bricks.js: breakable) */
+.bricks.live::after { display: none; }
+.bricks-live { position: absolute; left: 0; z-index: 2; pointer-events: none; image-rendering: pixelated; }
+.bricks::after {  /* (now and then the light runs along the course, caught only by the bricks: the logo's shine) */
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  -webkit-mask: url(img/bricks.png) repeat-x 0 0 / 960px 24px; mask: url(img/bricks.png) repeat-x 0 0 / 960px 24px;
+  background: linear-gradient(100deg, rgba(255, 250, 225, 0) 0, rgba(255, 250, 225, .35) 38%, rgba(255, 250, 225, .95) 50%, rgba(255, 250, 225, .35) 62%, rgba(255, 250, 225, 0) 100%) no-repeat;
+  background-size: 150px 100%; background-position: -150px 0; mix-blend-mode: soft-light;
 }
 
 /* The Dugout's timber board: iron corners, brass rails */
@@ -73,7 +83,7 @@ a:hover { color: #fff1c4; }
 }
 
 /* the hero */
-.hero { padding: 36px 0 56px; text-align: center; }
+.hero { padding: 56px 0 56px; text-align: center; }
 h1, h2, h3 { font-family: var(--pixel); font-weight: 400; line-height: 1.5; margin: 0 0 18px; }
 h1 {
   font-size: clamp(26px, 6vw, 56px); color: var(--gold);
@@ -86,27 +96,50 @@ h1 {
 .film figcaption { font: 10px/1.6 var(--pixel); color: var(--soft); padding-top: 14px; }
 
 /* the games */
-.games { padding: 64px 0 24px; }
+.games { padding: 64px 0 0; }
 .section-title { text-align: center; color: var(--gold); font-size: clamp(18px, 3.4vw, 28px); text-shadow: 3px 3px 0 #3a2410; }
 .section-note { text-align: center; color: var(--soft); max-width: 640px; margin: 0 auto 48px; }
 
-.game { display: grid; grid-template-columns: 1.15fr 1fr; gap: 36px; align-items: center; margin: 0 0 72px; }
+.game { display: grid; grid-template-columns: 1.15fr 1fr; gap: 36px; align-items: center; margin: 0 auto 72px; }
 .game.flip .shots { order: 2; }
 .game h3 { color: var(--gold); font-size: clamp(16px, 2.4vw, 22px); text-shadow: 3px 3px 0 #3a2410; margin-bottom: 8px; }
 .platform { font: 10px/1.6 var(--pixel); color: var(--sea); margin: 0 0 16px; }
 .game p { margin: 0 0 16px; }
-.status {
-  display: inline-block; font: 10px/1.6 var(--pixel); color: var(--night); background: var(--gold);
-  padding: 8px 12px; margin: 4px 8px 4px 0; text-decoration: none; box-shadow: 0 4px 0 #8a5a1c;
+/* the keys: Pocket's small keycap (art/keys, 21 px tall at twice size: only ever stretched along, never up), gold for
+   the way on, slate for the rest, the words stamped in as the game's are (ink, a line of the key's light under them);
+   pressed, it sinks onto its skirt. Statuses aren't keys: words beside one of its lamps. */
+a.status {
+  position: relative; display: inline-flex; align-items: flex-start; box-sizing: border-box; height: 42px;
+  margin: 4px 10px 6px 0; padding: 10px 4px 0; vertical-align: top; white-space: nowrap; overflow: hidden;
+  font: 16px/16px var(--pixel); color: rgb(70, 36, 8); text-shadow: 0 2px 0 rgb(255, 247, 199); text-decoration: none;
+  border-style: solid; border-width: 0 16px; border-color: transparent;
+  border-image: url(art/keys/gold.png) 0 8 fill / 0 16px / 0 repeat; image-rendering: pixelated;
 }
-a.status:hover { background: #fff1c4; color: var(--night); }
-.status.quiet { background: transparent; color: var(--gold); border: 2px solid var(--gold-deep); box-shadow: none; }
+a.status.quiet { border-image-source: url(art/keys/slate.png); color: rgb(5, 10, 18); text-shadow: 0 2px 0 rgb(210, 210, 210); }
+a.status:active { border-image-source: url(art/keys/gold_down.png); padding-top: 14px; }
+a.status.quiet:active { border-image-source: url(art/keys/slate_down.png); }
+a.status:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+a.status::after {  /* (its shimmer: the painted sweep of light, passing once under the pointer) */
+  content: ""; position: absolute; top: 2px; bottom: 16px; left: -10px; right: -10px; pointer-events: none;
+  background: linear-gradient(110deg, rgba(255, 250, 225, 0) 42%, rgba(255, 250, 225, .5) 50%, rgba(255, 250, 225, 0) 58%) no-repeat;
+  background-size: 300% 100%; background-position: 100% 0; opacity: 0;
+}
+span.status {
+  display: inline-flex; align-items: center; gap: 10px; margin: 4px 18px 6px 0; vertical-align: top;
+  font: 10px/1.6 var(--pixel); color: var(--gold);
+}
+span.status::before {
+  content: ""; width: 14px; height: 14px; flex: none; image-rendering: pixelated;
+  background: url(art/keys/lamp_on.png) 0 0 / 14px 14px;
+}
+span.status.quiet { color: var(--cream); }
+span.status.quiet::before { background-image: url(art/keys/lamp_off.png); }
 
 .shots { display: grid; gap: 10px; }
 .shots.wide { grid-template-columns: 1fr 1fr; }
 .shots.wide img:first-child { grid-column: 1 / -1; }
 .shots.tall { grid-template-columns: repeat(3, 1fr); }
-.shots img { width: 100%; height: auto; border: 3px solid #120e14; box-shadow: 0 0 0 2px var(--gold-deep); }
+.shots img { width: 100%; height: auto; border: 3px solid #120e14; box-shadow: 0 0 0 2px var(--gold-deep); position: relative; }
 .shots.tall img { aspect-ratio: 9 / 18; object-fit: cover; object-position: top; }
 
 /* how I work */
@@ -143,9 +176,151 @@ a.status:hover { background: #fff1c4; color: var(--night); }
   background: url(img/town.png) repeat-x 50% 100% / 1968px 472px, linear-gradient(var(--dusk), #09080f);
   image-rendering: pixelated;
 }
+/* the flood at the foot (js/flood.js): Tideglass's water rising up the town's foot as the page ends */
+.foot { position: relative; }
+.flood {
+  position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+  --band: 300px; --rise: 48; --step: 4; --frame: 44px;
+  filter: brightness(.58) saturate(.9);  /* (Tideglass's day water, under the town's night) */
+}
+.foot .wrap { position: relative; z-index: 1; }
+.flood i {  /* (the footer is the sea: its surface at the town's foot, lifting up it by --level) */
+  position: absolute; left: 0; right: 0; bottom: 0; top: calc(var(--band) - var(--frame) / 2 - var(--level, 0px));
+  image-rendering: pixelated;
+  background: url(art/water_tideglass_body.png) repeat-x 0 22px / 1024px 928px;
+}
+.flood i::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 44px; image-rendering: pixelated;
+  background: url(art/water_tideglass_stack.png) repeat-x 0 0 / 1024px 352px;
+}
 .foot a { color: var(--soft); }
 .foot p { margin: 6px 0; }
 .foot .brand { font-size: 12px; }
+
+/* ---- the living art (tools/make_art.py, js/scene.js): the games' own scenes, logos and crew ---- */
+.scene { position: absolute; left: 0; bottom: 0; z-index: 0; image-rendering: pixelated; }
+
+/* the sky: Coppercloud's harbour drifting over its cloud sea, the AVENGIS mark in gold bricks */
+.sky {
+  position: relative; overflow: hidden; display: flex; flex-direction: column;
+  min-height: clamp(440px, 72vh, 660px); background: #3d6f9e;
+}
+.sky::before {  /* (a little night at the top, so the bar reads over the sky) */
+  content: ""; position: absolute; inset: 0 0 auto; height: 110px; z-index: 1; pointer-events: none;
+  background: linear-gradient(rgba(9, 8, 16, .72), rgba(9, 8, 16, 0));
+}
+.sky .top { position: relative; z-index: 2; }
+.sky-title {
+  position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; text-align: center; padding: 8px 0 88px;
+}
+.mark { display: flex; flex-direction: column; align-items: center; gap: 12px; margin: 0 0 26px; line-height: 0; }
+.mark .big img { width: 807px; }
+.mark .small img { width: 387px; }
+.tagline { margin: 4px 0 0; line-height: 0; }
+.tagline img { width: 552px; }
+.tagline .glint { animation-delay: .5s; }
+.sky.short { min-height: clamp(380px, 56vh, 520px); }
+.mark .big.title-about img { width: 579px; }
+.tagline.line-about img { width: 496px; }
+/* the mark laid in as the page opens (js/build.js): hidden only while its bricks fall in */
+.building .mark img, .building .mark .glint, .building .tagline:not(.stamped) { visibility: hidden; }
+.building-canvas { position: absolute; z-index: 3; pointer-events: none; image-rendering: pixelated; }
+.tagline.stamped { animation: stamp .3s steps(3) both; }
+
+/* a logo and its shine: a soft light passing over the bricks now and then */
+.logo { position: relative; display: inline-block; line-height: 0; max-width: 100%; }
+.logo img { image-rendering: pixelated; max-width: 100%; height: auto; }
+.glint {
+  position: absolute; inset: 0; pointer-events: none;
+  -webkit-mask-size: 100% 100%; mask-size: 100% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0) 38%, rgba(255, 250, 225, .55) 46%, rgba(255, 255, 255, 0) 54%) no-repeat;
+  background-size: 300% 100%; background-position: 100% 0;
+}
+.mark .small .glint { animation-delay: .25s; }
+.game .glint { animation-delay: 2.5s; }
+
+/* each game in its own world */
+.world { position: relative; overflow: hidden; padding: 80px 0 72px; }
+.world .game { position: relative; z-index: 1; margin-bottom: 0; }
+.world .game > div:not(.shots) {
+  background: rgba(9, 8, 16, .84); padding: 26px 26px 20px;
+  border: 3px solid #120e14; box-shadow: 0 0 0 2px var(--gold-deep);
+}
+.game h3.logo, .game h3 .logo { margin: 0; }
+.game h3 .logo img, .game h3.logo img { width: 458px; }
+.game h3 { margin-bottom: 14px; }
+.edition {
+  display: block; margin-top: 12px; font: 13px/1 var(--pixel); color: var(--cream); letter-spacing: 3px;
+  text-shadow: 2px 2px 0 #0b0a12;
+}
+#pocket { padding-bottom: 110px; }  /* (room for Tideglass's water along the foot) */
+
+/* Rebounded's crew: their animated portraits from the game's HUD */
+.crew { position: relative; z-index: 1; display: flex; flex-wrap: wrap; justify-content: center; gap: 16px 22px; padding-top: 44px; }
+.crew figure { margin: 0; text-align: center; }
+.crew-anim {
+  display: block; width: 100px; height: 100px; image-rendering: pixelated;
+  background-size: 9600px 100px; background-repeat: no-repeat;
+  filter: drop-shadow(3px 4px 0 rgba(6, 6, 18, .6));
+}
+.crew figcaption { margin-top: 10px; font: 10px/1 var(--pixel); color: var(--hero); text-shadow: 2px 2px 0 #0b0a12; }
+
+/* The Dugout: down in its cave, under a lantern's glow, its name on a hanging board */
+.world.cave { background: #07060a url(art/cave.png) repeat 0 0 / 128px 512px; }
+.world.cave::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 38% 60% at 24% 48%, rgba(238, 186, 96, .24), rgba(238, 186, 96, 0) 70%),
+    radial-gradient(ellipse 28% 45% at 82% 62%, rgba(238, 160, 80, .16), rgba(238, 160, 80, 0) 70%),
+    linear-gradient(rgba(7, 6, 10, .78), rgba(7, 6, 10, .5) 45%, rgba(7, 6, 10, .82));
+}
+.world.cave .game > div:not(.shots) { background: rgba(14, 10, 10, .86); }
+.sign { display: inline-block; padding: 6px 14px; line-height: 0; }
+.sign.board.moss::before { top: -34px; }
+.sign img { width: 348px; max-width: 100%; height: auto; image-rendering: pixelated; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .glint { animation: glint 7s ease-in-out infinite; }
+  .crew-anim { animation: crew 8s steps(96) infinite; }
+  .crew figure:nth-child(2) .crew-anim { animation-delay: -1.7s; }
+  .crew figure:nth-child(3) .crew-anim { animation-delay: -3.1s; }
+  .crew figure:nth-child(4) .crew-anim { animation-delay: -4.6s; }
+  .crew figure:nth-child(5) .crew-anim { animation-delay: -6.2s; }
+  .world.cave::before { animation: lantern 5s ease-in-out infinite alternate; }
+}
+@keyframes glint { 0%, 72% { background-position: 100% 0; } 100% { background-position: 0 0; } }
+@keyframes crew { from { background-position: 0 0; } to { background-position: -9600px 0; } }
+@keyframes course { 0%, 78% { background-position: -150px 0; } 100% { background-position: calc(100% + 150px) 0; } }
+@keyframes stamp { from { transform: translateY(-6px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes tide { to { background-position: 0 calc(var(--frame) * -8); } }
+@keyframes sweep { from { background-position: 100% 0; opacity: 1; } to { background-position: 0 0; opacity: 1; } }
+@keyframes lantern { from { opacity: .82; } to { opacity: 1; } }
+
+@media (max-width: 900px) {
+  .mark .big img { width: 538px; }
+  .mark .small img { width: 258px; }
+  .tagline img { width: 368px; }
+  .mark .big.title-about img { width: 386px; }
+}
+@media (max-width: 820px) {
+  .world { padding: 56px 0 48px; }
+  .world .game > div:not(.shots) { padding: 20px 18px 14px; }
+}
+@media (max-width: 600px) {
+  .sky { min-height: 420px; }
+  .mark .big img { width: 269px; }
+  .mark .small img { width: 129px; }
+  .tagline img { width: 184px; }
+  .mark .big.title-about img { width: 193px; }
+  .tagline.line-about img { width: 248px; }
+  a.status { font-size: 10px; line-height: 10px; padding-top: 13px; }
+  a.status:active { padding-top: 17px; }
+  .crew-anim { width: 50px; height: 50px; background-size: 4800px 50px; }
+  @keyframes crew { from { background-position: 0 0; } to { background-position: -4800px 0; } }
+  .crew { gap: 14px; }
+  .crew figcaption { font-size: 8px; }
+}
 
 @media (max-width: 820px) {
   body { font-size: 17px; }
@@ -155,8 +330,16 @@ a.status:hover { background: #fff1c4; color: var(--night); }
   .board { border-width: 21px; border-image-width: 21px; }
   .board.moss::before { top: -27px; height: 24px; background-size: 256px 24px; }
   .foot::before { height: 200px; background-size: 984px 236px, auto; }
+  .flood { --band: 200px; --rise: 24; --step: 2; --frame: 22px; }
+  .flood i { background-size: 512px 464px; background-position: 0 11px; }
+  .flood i::before { height: 22px; background-size: 512px 176px; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .status, .nav a { transition: background .15s, color .15s, border-color .15s; }
+  .nav a { transition: background .15s, color .15s, border-color .15s; }
+  a.status:hover::after { animation: sweep .7s ease-out; }
+  .bricks::after { animation: course 12s ease-in-out 3s infinite; }
+  .flood i::before { animation: tide 1s steps(8) infinite; }
+  .shots img { transition: transform .18s ease-out, box-shadow .18s ease-out; }
+  .shots img:hover { transform: translateY(-4px); box-shadow: 0 0 0 2px var(--gold), 0 6px 0 2px rgba(5, 10, 18, .55); z-index: 1; }
 }

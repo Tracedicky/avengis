@@ -5,7 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>About Avengis Games</title>
 <meta name="description" content="About Aven, the solo developer behind Avengis Games.">
-<link rel="icon" href="img/dugout_icon.png">
+<meta property="og:title" content="About Avengis Games">
+<meta property="og:description" content="Avengis Games is one person: me, Aven.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://tracedicky.github.io/avengis/about.html">
+<meta property="og:image" content="https://tracedicky.github.io/avengis/art/share.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AVENGIS GAMES in gold bricks over Coppercloud's harbour: brick by brick">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="32x32" href="art/icon.png">
+<link rel="icon" type="image/png" sizes="64x64" href="art/icon64.png">
+<link rel="apple-touch-icon" href="art/icon180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -13,21 +24,25 @@
 </head>
 <body>
 
-<header class="wrap top">
-  <a class="brand" href="./">AVENGIS <span>GAMES</span></a>
-  <nav class="nav" aria-label="Main">
-    <a href="./">HOME</a>
-    <a href="./#games">GAMES</a>
-    <a href="about.html" aria-current="page">ABOUT</a>
-  </nav>
+<header class="sky short">
+  <canvas class="scene" data-scene="coppercloud-lighthouse" data-water="coppercloud" aria-hidden="true"></canvas>
+  <div class="wrap top">
+    <a class="brand" href="./">AVENGIS <span>GAMES</span></a>
+    <nav class="nav" aria-label="Main">
+      <a href="./">HOME</a>
+      <a href="./#games">GAMES</a>
+      <a href="about.html" aria-current="page">ABOUT</a>
+    </nav>
+  </div>
+  <div class="wrap sky-title">
+    <h1 class="mark">
+      <span class="logo shine big title-about"><img src="art/logo_about.png" width="193" height="38" alt="ABOUT"><i class="glint" style="-webkit-mask-image:url(art/logo_about.png);mask-image:url(art/logo_about.png)"></i></span>
+    </h1>
+    <p class="tagline line-about"><span class="logo shine"><img src="art/tagline_about.png" width="248" height="18" alt="Avengis Games is one person: me, Aven."><i class="glint" style="-webkit-mask-image:url(art/tagline_about.png);mask-image:url(art/tagline_about.png)"></i></span></p>
+  </div>
 </header>
 
 <main>
-  <section class="wrap hero">
-    <h1>ABOUT</h1>
-    <p class="lead">Avengis Games is one person: me, Aven.</p>
-  </section>
-
   <div class="bricks" role="presentation"></div>
 
   <section class="wrap about">
@@ -60,6 +75,7 @@
 </main>
 
 <footer class="foot">
+  <div class="flood" aria-hidden="true"><i></i></div>
   <div class="wrap">
     <p><a class="brand" href="./">AVENGIS <span>GAMES</span></a></p>
     <p>&copy; 2026 Avengis Games. Made in the UK.</p>
@@ -67,5 +83,8 @@
   </div>
 </footer>
 
+<script src="js/scene.js" defer></script>
+<script src="js/bricks.js" defer></script>
+<script src="js/flood.js" defer></script>
 </body>
 </html>
