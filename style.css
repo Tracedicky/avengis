@@ -1,0 +1,162 @@
+/* AVENGIS Games: Rebounded's font and bricks, The Dugout's timber boards, moss and night town. */
+:root {
+  --night: #090810;
+  --dusk: #1d1924;
+  --timber: #221b1e;
+  --timber-hi: #2a2125;
+  --gold: #ffd666;
+  --gold-deep: #e8ba60;
+  --cream: #ece4d2;
+  --soft: #aab0c4;
+  --sea: #6fd3e6;
+  --moss: #7fae4e;
+  --pixel: "Press Start 2P", monospace;
+  --body: "Atkinson Hyperlegible", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html { background: var(--night); }
+
+body {
+  margin: 0;
+  background: linear-gradient(var(--night) 0, var(--dusk) 900px, var(--dusk) 100%);
+  color: var(--cream);
+  font: 18px/1.65 var(--body);
+  overflow-x: hidden;
+}
+
+img { image-rendering: pixelated; max-width: 100%; display: block; }
+a { color: var(--gold); }
+a:hover { color: #fff1c4; }
+
+.wrap { width: min(1080px, 100% - 32px); margin: 0 auto; }
+
+/* the top bar */
+.top {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  padding: 18px 0;
+}
+.brand {
+  font: 16px/1 var(--pixel); color: var(--gold); text-decoration: none; letter-spacing: 1px;
+  text-shadow: 2px 2px 0 #3a2410;
+}
+.brand span { color: var(--cream); }
+.nav { display: flex; gap: 8px; flex-wrap: wrap; }
+.nav a {
+  font: 10px/1 var(--pixel); color: var(--cream); text-decoration: none;
+  padding: 10px 12px; border: 2px solid transparent;
+}
+.nav a:hover, .nav a[aria-current] { border-color: var(--gold-deep); color: var(--gold); }
+
+/* a course of Rebounded's bricks */
+.bricks {
+  height: 24px;
+  background: url(img/bricks.png) repeat-x 0 0 / 960px 24px;
+  image-rendering: pixelated;
+  margin: 0;
+}
+
+/* The Dugout's timber board: iron corners, brass rails */
+.board {
+  position: relative;
+  border: 30px solid transparent;
+  border-image: url(img/ui_board.png) 10 / 30px round;
+  image-rendering: pixelated;
+  background: var(--timber) padding-box;
+  background-clip: padding-box;
+}
+.board.moss::before {
+  content: ""; position: absolute; left: -12px; right: -12px; top: -38px; height: 36px;
+  background: url(img/ui_moss.png) repeat-x 0 100% / 384px 36px;
+  image-rendering: pixelated; pointer-events: none;
+}
+
+/* the hero */
+.hero { padding: 36px 0 56px; text-align: center; }
+h1, h2, h3 { font-family: var(--pixel); font-weight: 400; line-height: 1.5; margin: 0 0 18px; }
+h1 {
+  font-size: clamp(26px, 6vw, 56px); color: var(--gold);
+  text-shadow: 4px 4px 0 #3a2410;
+  letter-spacing: 2px;
+}
+.lead { max-width: 720px; margin: 0 auto 36px; font-size: 20px; color: var(--cream); }
+.film { max-width: 960px; margin: 0 auto; }
+.film video { display: block; width: 100%; height: auto; background: #000; }
+.film figcaption { font: 10px/1.6 var(--pixel); color: var(--soft); padding-top: 14px; }
+
+/* the games */
+.games { padding: 64px 0 24px; }
+.section-title { text-align: center; color: var(--gold); font-size: clamp(18px, 3.4vw, 28px); text-shadow: 3px 3px 0 #3a2410; }
+.section-note { text-align: center; color: var(--soft); max-width: 640px; margin: 0 auto 48px; }
+
+.game { display: grid; grid-template-columns: 1.15fr 1fr; gap: 36px; align-items: center; margin: 0 0 72px; }
+.game.flip .shots { order: 2; }
+.game h3 { color: var(--gold); font-size: clamp(16px, 2.4vw, 22px); text-shadow: 3px 3px 0 #3a2410; margin-bottom: 8px; }
+.platform { font: 10px/1.6 var(--pixel); color: var(--sea); margin: 0 0 16px; }
+.game p { margin: 0 0 16px; }
+.status {
+  display: inline-block; font: 10px/1.6 var(--pixel); color: var(--night); background: var(--gold);
+  padding: 8px 12px; margin: 4px 8px 4px 0; text-decoration: none; box-shadow: 0 4px 0 #8a5a1c;
+}
+a.status:hover { background: #fff1c4; color: var(--night); }
+.status.quiet { background: transparent; color: var(--gold); border: 2px solid var(--gold-deep); box-shadow: none; }
+
+.shots { display: grid; gap: 10px; }
+.shots.wide { grid-template-columns: 1fr 1fr; }
+.shots.wide img:first-child { grid-column: 1 / -1; }
+.shots.tall { grid-template-columns: repeat(3, 1fr); }
+.shots img { width: 100%; height: auto; border: 3px solid #120e14; box-shadow: 0 0 0 2px var(--gold-deep); }
+.shots.tall img { aspect-ratio: 9 / 18; object-fit: cover; object-position: top; }
+
+/* how I work */
+.ways { padding: 32px 0 64px; }
+.ways .board { padding: 8px 12px; }
+.ways ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.ways h3 { font-size: 12px; color: var(--gold); margin-bottom: 10px; }
+.ways p { margin: 0; font-size: 16px; color: var(--cream); }
+
+/* follow along */
+.follow { text-align: center; padding: 0 0 72px; }
+.links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+
+/* the about page */
+.about { display: grid; grid-template-columns: 1fr 1.4fr; gap: 40px; align-items: start; padding: 24px 0 64px; }
+.about .board { padding: 4px 8px; }
+.about h2 { color: var(--gold); font-size: 18px; text-shadow: 3px 3px 0 #3a2410; }
+.about p { margin: 0 0 16px; }
+.facts { list-style: none; padding: 0; margin: 0; }
+.facts li { padding: 10px 0; border-bottom: 2px dashed #3a3040; font-size: 16px; }
+.facts li:last-child { border-bottom: 0; }
+.facts b { display: block; font: 10px/1.6 var(--pixel); color: var(--sea); font-weight: 400; }
+
+/* the foot: The Dugout's night town */
+.foot {
+  margin-top: 24px;
+  background: #1d1924;
+  padding: 0 0 32px;
+  text-align: center;
+  font-size: 15px; color: var(--soft);
+}
+.foot::before {
+  content: ""; display: block; height: 300px; margin-bottom: 20px;
+  background: url(img/town.png) repeat-x 50% 100% / 1968px 472px, linear-gradient(var(--dusk), #09080f);
+  image-rendering: pixelated;
+}
+.foot a { color: var(--soft); }
+.foot p { margin: 6px 0; }
+.foot .brand { font-size: 12px; }
+
+@media (max-width: 820px) {
+  body { font-size: 17px; }
+  .game, .about { grid-template-columns: 1fr; gap: 22px; }
+  .game.flip .shots { order: 0; }
+  .ways ul { grid-template-columns: 1fr; }
+  .board { border-width: 21px; border-image-width: 21px; }
+  .board.moss::before { top: -27px; height: 24px; background-size: 256px 24px; }
+  .foot::before { height: 200px; background-size: 984px 236px, auto; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .status, .nav a { transition: background .15s, color .15s, border-color .15s; }
+}
