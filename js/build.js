@@ -1,10 +1,13 @@
-/* The mark laid in brick by brick as the page opens: Rebounded's splash (rebounded/render/frontend.py draw_logo and
+/* A page's title laid in brick by brick as it opens: Rebounded's splash (rebounded/render/frontend.py draw_logo and
    the splash's born()): each letter's bricks falling in from above, its bottom rows first, landing with a little
-   bounce; its mortar setting in as its last brick lands, a puff of brick dust; one letter after another, AVENGIS then
-   GAMES; then BRICK BY BRICK stamped in under them.
+   bounce; its mortar setting in as its last brick lands, a puff of brick dust; one letter after another, one word
+   after another (AVENGIS then GAMES); then its line stamped in under them.
 
-   Once a visit (sessionStorage), never for anyone who asks for less motion: the <head> only hides the mark for it
-   (html.building) when it will run, and lets it go after a few seconds whatever happens. */
+   <h1 class="mark"><span class="logo" data-build="avengis" data-at="0">...   (art/build.json's, from data-at s)
+
+   Never for anyone who asks for less motion: the <head> only hides the title for it (html.building) when it will run,
+   and lets it go after a few seconds whatever happens; html[data-built] names the visit's note (sessionStorage) that
+   it's been seen, so a page plays it once a visit. Tells the page when it's done (the 'avengis:built' event). */
 (function () {
   "use strict";
   var root = document.documentElement;
@@ -16,12 +19,11 @@
   var LAND = 0.35, STEP = 0.1;      // (frontend.py SPLASH_LAND, SPLASH_STEP) the first letter's landing; each next
   var ABOVE = 62, SIDE = 20, BELOW = 8;  // room round the logo for the falling bricks and the dust
   var DUST = [[150, 120, 80], [110, 90, 60]];
-  var LOGOS = [[".mark .big", "avengis", 0], [".mark .small", "games", 0.55]];
-  var TAGLINE = 1.75, DONE = 2.3;
 
   function finish() {
     root.classList.remove("building");
-    try { sessionStorage.setItem("avengis-built", "1"); } catch (e) {}
+    try { if (root.dataset.built) sessionStorage.setItem(root.dataset.built, "1"); } catch (e) {}
+    document.dispatchEvent(new CustomEvent("avengis:built"));
   }
 
   function ease(k) {  // (frontend.py ease_drop: how far down a falling brick is, a little bounce as it lands)
@@ -92,8 +94,10 @@
   };
 
   function run(book) {
-    var parts = LOGOS.map(function (L) { return [document.querySelector(L[0]), book[L[1]], L[2]]; });
-    if (parts.some(function (p) { return !p[0] || !p[1] || !p[0].querySelector("img").getBoundingClientRect().width; })) {
+    var parts = Array.prototype.map.call(document.querySelectorAll(".mark [data-build]"), function (el) {
+      return [el, book[el.dataset.build], parseFloat(el.dataset.at || "0")];
+    });
+    if (!parts.length || parts.some(function (p) { return !p[1] || !p[0].querySelector("img").getBoundingClientRect().width; })) {
       finish();
       return;
     }
@@ -107,6 +111,8 @@
     })).then(function (atlases) {
       if (atlases.some(function (a) { return !a; })) { finish(); return; }
       var logos = parts.map(function (p, i) { return new Logo(p[0], p[1], atlases[i], p[2]); });
+      var whole = Math.max.apply(null, parts.map(function (p) { return p[2] + LAND + (p[1].letters.length - 1) * STEP; }));
+      var TAGLINE = whole + 0.45, DONE = TAGLINE + 0.55;  // (its line stamped in once the last letter's down)
       var tagline = document.querySelector(".tagline");
       var t0 = null, prev = null;
       var ended = false;

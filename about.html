@@ -20,6 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+<script>try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches&&!sessionStorage.getItem("avengis-built-about")){var r=document.documentElement;r.classList.add("building");r.dataset.built="avengis-built-about";window.buildSafety=setTimeout(function(){r.classList.remove("building")},5000)}}catch(e){}</script>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -36,7 +37,7 @@
   </div>
   <div class="wrap sky-title">
     <h1 class="mark">
-      <span class="logo shine big title-about"><img src="art/logo_about.png" width="193" height="38" alt="ABOUT"><i class="glint" style="-webkit-mask-image:url(art/logo_about.png);mask-image:url(art/logo_about.png)"></i></span>
+      <span class="logo shine big title-about" data-build="about" data-at="0"><img src="art/logo_about.png" width="193" height="38" alt="ABOUT"><i class="glint" style="-webkit-mask-image:url(art/logo_about.png);mask-image:url(art/logo_about.png)"></i></span>
     </h1>
     <p class="tagline line-about"><span class="logo shine"><img src="art/tagline_about.png" width="248" height="18" alt="Avengis Games is one person: me, Aven."><i class="glint" style="-webkit-mask-image:url(art/tagline_about.png);mask-image:url(art/tagline_about.png)"></i></span></p>
   </div>
@@ -84,6 +85,7 @@
 </footer>
 
 <script src="js/scene.js" defer></script>
+<script src="js/build.js" defer></script>
 <script src="js/bricks.js" defer></script>
 <script src="js/flood.js" defer></script>
 </body>

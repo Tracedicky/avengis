@@ -7,6 +7,8 @@
 
    <div class="bricks"></div>                    img/bricks.png, 20 bricks of 16 x 8
    <div class="bar" data-world="tideglass"></div> art/bars.json's world, two rows
+   <div class="bar" ... data-gap="4,2"></div>      a hole smashed through its middle as the page opens (that many
+                                                  bricks a row, centred), for good: the page not found's
    (at three times size; without this script the page shows each as a still background) */
 (function () {
   "use strict";
@@ -88,6 +90,11 @@
     var lctx = light.getContext("2d");
     var tall = kind.rows * TALL;
     var broken = {}, bits = [], W = 0, mid = 0, SCALE = 3, t0 = performance.now(), prev = t0;
+    var gap = (strip.dataset.gap || "").split(",").map(Number), smashed = still;
+    function inGap(c, r) {
+      var n = gap[r] || 0, from = -Math.floor(n / 2);
+      return n > 0 && c >= from && c < from + n;
+    }
 
     function fit() {
       SCALE = parseFloat(getComputedStyle(strip).getPropertyValue("--scale")) || 3;  // (the page's: 2 on a phone)
@@ -117,6 +124,7 @@
       var first = Math.floor(-mid / BRICK) - 1, last = Math.ceil((W - mid) / BRICK);
       for (var r = 0; r < kind.rows; r++) {
         for (var c = first; c <= last; c++) {
+          if (smashed && inGap(c, r)) continue;
           var key = c + "," + r, gone = broken[key], dy = 0, alpha = 1;
           if (gone !== undefined) {
             var age = t - gone;
@@ -191,12 +199,22 @@
       var c = Math.floor(((e.clientX - box.left) / SCALE - mid) / BRICK);
       var r = Math.max(0, Math.min(kind.rows - 1, Math.floor((e.clientY - box.top) / SCALE / TALL)));
       var key = c + "," + r;
-      if (broken[key] !== undefined) return;
+      if (broken[key] !== undefined || (smashed && inGap(c, r))) return;
       broken[key] = (performance.now() - t0) / 1000;
       burst(c, r);
       if (still) draw(performance.now());
     });
 
+    if (gap[0] && !smashed) {  // (the hole: smashed once the page's title is down, its chips flying)
+      var smash = function () {
+        if (smashed) return;
+        for (var r = 0; r < kind.rows; r++)
+          for (var c = -8; c < 8; c++) if (inGap(c, r)) burst(c, r);
+        smashed = true;
+      };
+      if (document.documentElement.classList.contains("building")) document.addEventListener("avengis:built", function () { setTimeout(smash, 250); });
+      else setTimeout(smash, 700);
+    }
     if ("ResizeObserver" in window) new ResizeObserver(fit).observe(strip);
     fit();
     if (!still) requestAnimationFrame(tick);

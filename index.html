@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
-<script>try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches&&!sessionStorage.getItem("avengis-built")){document.documentElement.classList.add("building");window.buildSafety=setTimeout(function(){document.documentElement.classList.remove("building")},5000)}}catch(e){}</script>
+<script>try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches&&!sessionStorage.getItem("avengis-built")){var r=document.documentElement;r.classList.add("building");r.dataset.built="avengis-built";window.buildSafety=setTimeout(function(){r.classList.remove("building")},5000)}}catch(e){}</script>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -35,8 +35,8 @@
   </div>
   <div class="wrap sky-title">
     <h1 class="mark">
-      <span class="logo shine big"><img src="art/logo_avengis.png" width="269" height="38" alt="AVENGIS"><i class="glint" style="-webkit-mask-image:url(art/logo_avengis.png);mask-image:url(art/logo_avengis.png)"></i></span>
-      <span class="logo shine small"><img src="art/logo_games.png" width="129" height="30" alt="GAMES"><i class="glint" style="-webkit-mask-image:url(art/logo_games.png);mask-image:url(art/logo_games.png)"></i></span>
+      <span class="logo shine big" data-build="avengis" data-at="0"><img src="art/logo_avengis.png" width="269" height="38" alt="AVENGIS"><i class="glint" style="-webkit-mask-image:url(art/logo_avengis.png);mask-image:url(art/logo_avengis.png)"></i></span>
+      <span class="logo shine small" data-build="games" data-at=".55"><img src="art/logo_games.png" width="129" height="30" alt="GAMES"><i class="glint" style="-webkit-mask-image:url(art/logo_games.png);mask-image:url(art/logo_games.png)"></i></span>
     </h1>
     <p class="tagline"><span class="logo shine"><img src="art/tagline.png" width="184" height="18" alt="Brick by brick"><i class="glint" style="-webkit-mask-image:url(art/tagline.png);mask-image:url(art/tagline.png)"></i></span></p>
   </div>

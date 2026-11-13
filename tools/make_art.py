@@ -35,9 +35,10 @@ DEV = HERE.parent
 POCKET = DEV / 'AVENGIS_FLOOD' / 'assets' / 'rebounded'
 DUGOUT = DEV / 'AVENGIS_DUGOUT' / 'assets'
 OUT = HERE / 'art'
-SCENES = ('coppercloud-harbour', 'stormglass-peaks', 'tideglass-above', 'coppercloud-lighthouse')
+SCENES = ('coppercloud-harbour', 'stormglass-peaks', 'tideglass-above', 'coppercloud-lighthouse', 'stormglass-above')
 WATERS = ('tideglass', 'coppercloud')
 HEROES = ('juno', 'rook', 'rowan', 'mira', 'nell')
+NO_FLASH = {'lightning'}  # (never on the site: a bolt appearing and vanishing is a flash; Aven's epilepsy, no flashes)
 
 
 def logos():
@@ -48,12 +49,13 @@ def logos():
     from rebounded.render import logo
     sheet = pygame.image.load(str(POCKET / 'pieces' / 'logo-bricks.png')).convert_alpha()  # (kit.frame('logo-bricks-020'))
     for name, word, size, gold in (('logo_avengis', 'AVENGIS', 'big', True), ('logo_games', 'GAMES', 'small', True),
-                                   ('logo_about', 'ABOUT', 'big', True),
+                                   ('logo_about', 'ABOUT', 'big', True), ('logo_lost', 'LOST?', 'big', True),
                                    ('head_games', 'THE GAMES', 'small', True), ('head_follow', 'FOLLOW ALONG', 'small', True),
                                    ('logo_rebounded', 'REBOUNDED', 'small', False)):
         pygame.image.save(logo.build(word, size, sheet, gold=gold), str(OUT / f'{name}.png'))
     build = {}
-    for name, word, size in (('avengis', 'AVENGIS', 'big'), ('games', 'GAMES', 'small')):
+    for name, word, size in (('avengis', 'AVENGIS', 'big'), ('games', 'GAMES', 'small'), ('about', 'ABOUT', 'big'),
+                             ('lost', 'LOST?', 'big')):
         # (js/build.js lays these in as the game's splash does: each letter's setting, and its bricks to fall in)
         letters = logo.parts(word, size, sheet, gold=True)
         sw, sh = letters[0][1].get_size()
@@ -157,6 +159,7 @@ def tagline():
     """BRICK BY BRICK under the mark, in Pocket's gold 16 with its ink."""
     pocket_say('BRICK BY BRICK', 16).save(OUT / 'tagline.png')
     pocket_say('ONE PERSON: ME, AVEN', 16).save(OUT / 'tagline_about.png')
+    pocket_say('NOTHING HERE BUT SKY', 16).save(OUT / 'tagline_lost.png')  # (404.html's)
 
 
 def scenes():
@@ -176,6 +179,8 @@ def scenes():
             frames.setdefault(layer, {})[int(index)] = [r['x'], r['y'], r['w'], r['h'], at['x'], at['y'], f['sourceSize']['w']]
         layers = []
         for layer in data['meta']['layers']:
+            if layer['name'] in NO_FLASH:
+                continue
             fields = dict(p.split('=') for p in str(layer.get('data', '')).split(';') if '=' in p)
             fps = float(fields.get('fps', 0))
             mine = frames[layer['name']]

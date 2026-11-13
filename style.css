@@ -247,8 +247,14 @@ span.status.quiet::before { background-image: url(art/keys/lamp_off.png); }
 .sky.short { min-height: clamp(380px, 56vh, 520px); }
 .mark .big.title-about img { width: 579px; }
 .tagline.line-about img { width: 496px; }
+.sky.lost { min-height: clamp(460px, 78vh, 700px); }
+.tagline.line-lost img { width: 524px; }
+.keys-lost { margin: 30px 0 0; }
+.keys-lost .status { margin: 4px 6px 6px; }
 /* the mark laid in as the page opens (js/build.js): hidden only while its bricks fall in */
-.building .mark img, .building .mark .glint, .building .tagline:not(.stamped) { visibility: hidden; }
+.building .mark img, .building .mark .glint, .building .tagline:not(.stamped),
+.building .tagline:not(.stamped) ~ .keys-lost { visibility: hidden; }
+.tagline.stamped ~ .keys-lost { animation: stamp .3s steps(3) .2s both; }
 .building-canvas { position: absolute; z-index: 3; pointer-events: none; image-rendering: pixelated; }
 .tagline.stamped { animation: stamp .3s steps(3) both; }
 
@@ -339,6 +345,7 @@ span.status.quiet::before { background-image: url(art/keys/lamp_off.png); }
   .tagline img { width: 184px; }
   .mark .big.title-about img { width: 193px; }
   .tagline.line-about img { width: 248px; }
+  .tagline.line-lost img { width: 262px; }
   .section-title img { width: calc(var(--w, 0) * 1px); }
   .bricks, .bar, .rail { --scale: 2; }  /* (the page's brickwork at twice size on a phone) */
   .bricks { height: 16px; background-size: 640px 16px; }
