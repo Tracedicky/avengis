@@ -24,7 +24,7 @@
 <body>
 
 <header class="sky">
-  <canvas class="scene" data-scene="coppercloud-harbour" data-water="coppercloud" aria-hidden="true"></canvas>
+  <canvas class="scene" data-scene="coppercloud-harbour" data-water="coppercloud" data-sink="7" aria-hidden="true"></canvas>
   <div class="wrap top">
     <a class="brand" href="./">AVENGIS <span>GAMES</span></a>
     <nav class="nav" aria-label="Main">
@@ -40,7 +40,9 @@
     </h1>
     <p class="tagline"><span class="logo shine"><img src="art/tagline.png" width="184" height="18" alt="Brick by brick"><i class="glint" style="-webkit-mask-image:url(art/tagline.png);mask-image:url(art/tagline.png)"></i></span></p>
   </div>
+  <a class="cue" href="#games" aria-label="Down to the games"><img src="art/keys/chevron_down.png" width="11" height="7" alt=""></a>
 </header>
+<div class="bar" data-world="coppercloud" role="presentation"></div>
 
 <main>
   <section class="wrap hero">
@@ -56,10 +58,11 @@
 
   <section class="games" id="games">
     <div class="wrap">
-      <h2 class="section-title">THE GAMES</h2>
+      <h2 class="section-title"><span class="logo shine"><img style="--w:229" src="art/head_games.png" width="229" height="30" alt="THE GAMES"><i class="glint" style="-webkit-mask-image:url(art/head_games.png);mask-image:url(art/head_games.png)"></i></span></h2>
       <p class="section-note">Three games, every brick, sprite and menu drawn for the game it lives in.</p>
     </div>
 
+    <div class="bar" data-world="stormglass" role="presentation"></div>
     <div class="world" id="rebounded">
     <canvas class="scene" data-scene="stormglass-peaks" aria-hidden="true"></canvas>
     <article class="wrap game">
@@ -85,9 +88,9 @@
       <figure style="--hero:#bc93db"><span class="crew-anim" style="background-image:url(art/crew_nell.png)"></span><figcaption>NELL</figcaption></figure>
     </div>
     </div>
-
+    <div class="bar" data-world="tideglass" role="presentation"></div>
     <div class="world" id="pocket">
-    <canvas class="scene" data-scene="tideglass-above" data-water="tideglass" aria-hidden="true"></canvas>
+    <canvas class="scene" data-scene="tideglass-above" data-water="tideglass" data-sink="4" aria-hidden="true"></canvas>
     <article class="wrap game flip">
       <div class="shots tall">
         <img src="img/pocket_1.jpg" width="405" height="720" alt="The Steamstrider warden beaten, on a phone screen" loading="lazy">
@@ -104,7 +107,7 @@
       </div>
     </article>
     </div>
-
+    <div class="rail top" role="presentation"></div>
     <div class="world cave" id="dugout">
     <article class="wrap game">
       <div class="shots tall">
@@ -121,6 +124,7 @@
       </div>
     </article>
     </div>
+    <div class="rail under" role="presentation"></div>
   </section>
 
   <section class="wrap ways">
@@ -143,7 +147,7 @@
   </section>
 
   <section class="wrap follow">
-    <h2 class="section-title">FOLLOW ALONG</h2>
+    <h2 class="section-title"><span class="logo shine"><img style="--w:304" src="art/head_follow.png" width="304" height="30" alt="FOLLOW ALONG"><i class="glint" style="-webkit-mask-image:url(art/head_follow.png);mask-image:url(art/head_follow.png)"></i></span></h2>
     <p class="section-note">Updates, sneak peeks and the odd behind-the-scenes clip.</p>
     <div class="links">
       <a class="status" href="https://discord.gg/P8ZdvnhdK">DISCORD</a>

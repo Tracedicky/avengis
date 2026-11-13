@@ -14,7 +14,7 @@
   // (day from seven till five by the visitor's own clock, dusk's frames the rest: its sunset, its stars and lit windows;
   //  ?day or ?dusk in the address to see either)
   var hour = new Date().getHours();
-  var DUSK = /[?&]dusk/.test(location.search) ? 5 : /[?&]day/.test(location.search) ? 4 : (hour >= 7 && hour < 17 ? 4 : 5);
+  var DUSK = /[?&]dusk\b/.test(location.search) ? 5 : /[?&]day\b/.test(location.search) ? 4 : (hour >= 7 && hour < 17 ? 4 : 5);
   var follow = 0, aim = 0;
 
   function image(src) {
@@ -38,6 +38,7 @@
     this.atlas = atlas;
     this.surface = surface;
     this.body = body;
+    this.sink = parseInt(canvas.dataset.sink || "0", 10);
     this.visible = true;
     this.fit();
   }
@@ -60,7 +61,7 @@
 
   Scene.prototype.draw = function (t) {
     var c = this.ctx, d = this.data, W = this.w, H = this.h;
-    var sea = this.surface ? H - WATER.h - 3 : H;
+    var sea = this.surface ? H - WATER.h - 3 + this.sink : H;  // (data-sink: its water lowered onto the seam below)
     var base = sea - d.height + (this.surface ? 6 : 0);
     var x0 = Math.round((W - 384) / 2);
     c.clearRect(0, 0, W, H);
@@ -81,6 +82,7 @@
         c.drawImage(this.atlas, fr[0], fr[1], fr[2], fr[3], x0 + start + fr[4], base + fr[5], fr[2], fr[3]);
     }
     if (this.surface) {  // (the pad's little sea, play_view.gd _pad_water: the body, its painted surface over it)
+      if (DUSK === 5) c.filter = "brightness(.62) saturate(.9)";  // (the day's water, under the dusk: as the footer's)
       var f = Math.floor(t * WATER.rate) % WATER.frames;
       var top = sea + Math.floor(WATER.h / 2);
       for (var bx = 0; bx < W; bx += this.body.width)
@@ -88,6 +90,7 @@
           c.drawImage(this.body, bx, by);
       for (var wx = 0; wx < W; wx += WATER.w)
         c.drawImage(this.surface, f * WATER.w, 0, WATER.w, WATER.h, wx, sea, WATER.w, WATER.h);
+      c.filter = "none";
     }
   };
 

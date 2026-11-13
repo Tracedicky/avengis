@@ -5,6 +5,7 @@
 Writes art/:
 - logo_avengis.png, logo_games.png, logo_about.png: the AVENGIS mark (and About's title) in gold bricks (Rebounded's render/logo.py, as the game builds it)
 - build_<logo>.png + build.json: the gold mark's letters (setting + bricks) for js/build.js to lay in
+- head_<name>.png: the section headings in the same gold bricks (THE BRICKWORK's headings)
 - logo_rebounded.png: REBOUNDED in the five worlds' bricks (the menu's size)
 - dugout_title.png: THE DUGOUT and DOWN THE OLD MINE in The Dugout's own fonts, its title sign's colours
 - scenes/<name>.png + scenes.json: Pocket's parallax backdrops (Aseprite atlases), each layer's drift, follow, fps, wrap
@@ -14,7 +15,8 @@ Writes art/:
 - crew_<hero>.png: the five heroes' animated crew portraits (96 frames of 50 x 50 at 12 fps)
 - cave.png: The Dugout's cave back wall
 - share.png: the link card (1200 x 630); icon.png, icon64.png, icon180.png: the tab and home-screen icons (the gold A)
-- keys/: Pocket's small keycap, gold and slate, up (its first frame) and pressed, and its two lamps
+- bars/ + bars.json: the seams, a sector level's two-row bar in a world's bricks (animated) and The Dugout's rail
+- keys/: Pocket's small keycap, gold and slate, up (its first frame) and pressed, its two lamps, its chevron (down)
 """
 
 import json
@@ -47,6 +49,7 @@ def logos():
     sheet = pygame.image.load(str(POCKET / 'pieces' / 'logo-bricks.png')).convert_alpha()  # (kit.frame('logo-bricks-020'))
     for name, word, size, gold in (('logo_avengis', 'AVENGIS', 'big', True), ('logo_games', 'GAMES', 'small', True),
                                    ('logo_about', 'ABOUT', 'big', True),
+                                   ('head_games', 'THE GAMES', 'small', True), ('head_follow', 'FOLLOW ALONG', 'small', True),
                                    ('logo_rebounded', 'REBOUNDED', 'small', False)):
         pygame.image.save(logo.build(word, size, sheet, gold=gold), str(OUT / f'{name}.png'))
     build = {}
@@ -225,6 +228,8 @@ def keys():
             Image.open(ui / f'key_small_{tone}{state}.png').crop((0, 0, 70, 21)).save(OUT / 'keys' / f'{tone}{state}.png')
     for lamp in ('lamp_on', 'lamp_off'):
         shutil.copyfile(ui / f'{lamp}.png', OUT / 'keys' / f'{lamp}.png')
+    # (its way on, turned a quarter to point down: lively.gd chevron_down, the header's way to the games)
+    Image.open(ui / 'chevron.png').convert('RGBA').rotate(-90, expand=True).save(OUT / 'keys' / 'chevron_down.png')
 
 
 def share_and_icon():
@@ -281,6 +286,47 @@ def share_and_icon():
     touch.convert('RGB').save(OUT / 'icon180.png')
 
 
+BARS = ('coppercloud', 'stormglass', 'tideglass')
+
+
+def bars():
+    """The seams between the page's worlds: a sector level's bar between its two screens (Rebounded's
+    worlds/second_screen.py BAR_TOP / BAR_LOW: two rows, a checkerboard of the world's tough brick and its cargo, '3'
+    and '6'), each brick's own 24 frames (Pocket's pieces: tough1, motif2, motif5), for js/bricks.js; and one still
+    (bar_<world>.png, 32 bricks along) for a page without it. And The Dugout's board rail (img/ui_board.png's top and
+    bottom edges, an iron cap at each end of every 256) for the mine's top and foot."""
+    manifest = json.loads((POCKET / 'manifest.json').read_text(encoding='utf-8'))
+    (OUT / 'bars').mkdir(exist_ok=True)
+    book = {}
+    for world in BARS:
+        pieces = manifest['worlds'][world]['pieces']
+        keys = ('tough1', 'motif2', 'motif5')  # ('S', '3', '6': play_view.gd's keys for them)
+        frames = pieces['tough1']['frames']
+        atlas = Image.new('RGBA', (16 * frames, 8 * len(keys)))
+        for row, key in enumerate(keys):
+            strip = Image.open(POCKET / pieces[key]['file']).convert('RGBA')
+            atlas.paste(strip.crop((0, 0, 16 * frames, 8)), (0, row * 8))
+        atlas.save(OUT / 'bars' / f'{world}.png')
+        still = Image.new('RGBA', (16 * 32, 16))
+        for r in range(2):
+            for c in range(32):
+                ch = ('S' if c % 2 == 0 else '36'[c // 2 % 2]) if r == 0 else ('S' if c % 2 == 1 else '63'[c // 2 % 2])
+                k = 'S36'.index(ch)
+                still.alpha_composite(atlas.crop((0, k * 8, 16, k * 8 + 8)), (c * 16, r * 8))
+        still.save(OUT / 'bars' / f'bar_{world}.png')
+        book[world] = {'image': f'art/bars/{world}.png', 'frames': frames, 'ms': pieces['tough1']['ends'][0]}
+    (OUT / 'bars.json').write_text(json.dumps(book, separators=(',', ':')), encoding='utf-8')
+    board = Image.open(HERE / 'img' / 'ui_board.png').convert('RGBA')  # (36 x 36: 10 px edges, iron corners)
+    for name, y in (('rail_top', 0), ('rail_foot', 26)):
+        rail = Image.new('RGBA', (256, 10))
+        edge = board.crop((10, y, 26, y + 10))
+        for x in range(0, 256, 16):
+            rail.alpha_composite(edge, (x, 0))
+        rail.alpha_composite(board.crop((0, y, 10, y + 10)), (0, 0))      # (an iron cap: the board's corner)
+        rail.alpha_composite(board.crop((26, y, 36, y + 10)), (246, 0))
+        rail.save(OUT / 'bars' / f'{name}.png')
+
+
 def main():
     OUT.mkdir(exist_ok=True)
     logos()
@@ -291,6 +337,7 @@ def main():
     crew()
     cave()
     keys()
+    bars()
     share_and_icon()
     print('art written to', OUT)
 

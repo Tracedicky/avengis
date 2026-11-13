@@ -1,41 +1,83 @@
-/* The course of bricks, breakable: click or tap a brick and it breaks as Rebounded's stone does (render/bits.py
-   debris 'stone': seven chips in its colours flung up and falling, a little dust), and a few seconds later it settles
-   back into place. The strip's light (the glint running along it now and then) drawn here too, so a gap never
-   catches it.
+/* The page's brickwork, breakable: the course of bricks under the film, and the bars at the seams between its worlds
+   (a sector level's bar between its two screens: Rebounded's worlds/second_screen.py BAR_TOP and BAR_LOW, two rows
+   in a checkerboard of the world's tough brick and its cargo, each brick shimmering through its own frames). Click or
+   tap a brick and it breaks as Rebounded's stone does (render/bits.py debris 'stone': seven chips in its colours flung
+   up and falling, a little dust), and a few seconds later it settles back into place. The course's light (the glint
+   running along it now and then) drawn here too, so a gap never catches it. Every pattern centred on the page.
 
-   <div class="bricks"></div>   (img/bricks.png, 20 bricks of 16 x 8, at three times size; without this script the
-                                 page shows it as a plain background) */
+   <div class="bricks"></div>                    img/bricks.png, 20 bricks of 16 x 8
+   <div class="bar" data-world="tideglass"></div> art/bars.json's world, two rows
+   (at three times size; without this script the page shows each as a still background) */
 (function () {
   "use strict";
-  var SCALE = 3, BRICK = 16, TALL = 8, ROOM = 40;  // (ROOM: art px above and below for the chips to fly in)
+  var BRICK = 16, TALL = 8, ROOM = 40;  // (ROOM: art px above and below for the chips to fly in)
   var BACK = 4.5;                                  // s until a broken brick settles back
   var GRAVITY = 220, CHIPS = 7;                    // (bits.py GRAVITY['chip'], debris 'stone')
   var GLINT = { every: 12, delay: 3, travel: 0.22, band: 50 };  // (the CSS .bricks::after it replaces)
   var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  var art = new Image();
-  art.src = "img/bricks.png";
-  art.onload = function () {
-    var shades = colours(art);
-    Array.prototype.forEach.call(document.querySelectorAll(".bricks"), function (strip) { live(strip, shades); });
-  };
+  function mod(a, n) { return ((a % n) + n) % n; }
 
-  function colours(im) {  // each brick's colour (its middle), a shade darker and lighter (bits.py mix)
+  function load(src) {
+    return new Promise(function (done) {
+      var im = new Image();
+      im.onload = function () { done(im); };
+      im.onerror = function () { done(null); };
+      im.src = src;
+    });
+  }
+
+  function colours(im, spots) {  // each brick's colour (its middle), a shade darker and lighter (bits.py mix)
     var c = document.createElement("canvas");
     c.width = im.width; c.height = im.height;
     var g = c.getContext("2d");
     g.drawImage(im, 0, 0);
-    var out = [];
-    for (var i = 0; i < im.width / BRICK; i++) {
-      var p = g.getImageData(i * BRICK + 8, 3, 1, 1).data;
+    return spots.map(function (s) {
+      var p = g.getImageData(s[0], s[1], 1, 1).data;
       var mid = [p[0], p[1], p[2]];
-      out.push([mid, mid.map(function (v) { return Math.round(v * 0.55); }),
-                mid.map(function (v) { return Math.round(v + (255 - v) * 0.5); })]);
-    }
-    return out;
+      return [mid, mid.map(function (v) { return Math.round(v * 0.55); }),
+              mid.map(function (v) { return Math.round(v + (255 - v) * 0.5); })];
+    });
   }
 
-  function live(strip, shades) {
+  // ----- the kinds of brickwork: which brick is where, and its picture now -----
+  function course(art) {
+    var n = art.width / BRICK, spots = [];
+    for (var i = 0; i < n; i++) spots.push([i * BRICK + 8, 3]);
+    var shades = colours(art, spots);
+    return {
+      rows: 1, glint: true,
+      brick: function (c) { var k = mod(c, n); return { sx: k * BRICK, sy: 0, shade: shades[k] }; },
+      art: art
+    };
+  }
+
+  function bar(art, info) {
+    var shades = colours(art, [[8, 3], [8, 11], [8, 19]]);  // ('S', '3', '6': tough1, motif2, motif5)
+    var frames = info.frames, ms = info.ms;
+    return {
+      rows: 2, glint: false,
+      brick: function (c, r, t) {
+        var ch = r === 0 ? (mod(c, 2) === 0 ? 0 : (mod(Math.floor(c / 2), 2) === 0 ? 1 : 2))
+                         : (mod(c, 2) === 1 ? 0 : (mod(Math.floor(c / 2), 2) === 0 ? 2 : 1));
+        var f = still ? 0 : mod(Math.floor(t * 1000 / ms) + c * 3 + r * 5, frames);  // (its shimmer, along the bar)
+        return { sx: f * BRICK, sy: ch * TALL, shade: shades[ch] };
+      },
+      art: art
+    };
+  }
+
+  Promise.all([load("img/bricks.png"), fetch("art/bars.json").then(function (r) { return r.json(); }).catch(function () { return {}; })])
+    .then(function (got) {
+      if (got[0]) Array.prototype.forEach.call(document.querySelectorAll(".bricks"), function (el) { live(el, course(got[0])); });
+      var book = got[1];
+      Array.prototype.forEach.call(document.querySelectorAll(".bar[data-world]"), function (el) {
+        var info = book[el.dataset.world];
+        if (info) load(info.image).then(function (im) { if (im) live(el, bar(im, info)); });
+      });
+    });
+
+  function live(strip, kind) {
     var canvas = document.createElement("canvas");
     canvas.className = "bricks-live";
     canvas.setAttribute("aria-hidden", "true");
@@ -44,12 +86,15 @@
     var ctx = canvas.getContext("2d");
     var light = document.createElement("canvas");  // (the glint, cut to the bricks before it's laid on them)
     var lctx = light.getContext("2d");
-    var broken = {}, bits = [], W = 0, t0 = performance.now(), prev = t0, running = false;
+    var tall = kind.rows * TALL;
+    var broken = {}, bits = [], W = 0, mid = 0, SCALE = 3, t0 = performance.now(), prev = t0;
 
     function fit() {
+      SCALE = parseFloat(getComputedStyle(strip).getPropertyValue("--scale")) || 3;  // (the page's: 2 on a phone)
       W = Math.ceil(strip.getBoundingClientRect().width / SCALE);
+      mid = Math.floor(W / 2) - BRICK / 2;  // (brick 0 in the middle of the page: every pattern lined up on it)
       canvas.width = light.width = W;
-      canvas.height = light.height = TALL + ROOM * 2;
+      canvas.height = light.height = tall + ROOM * 2;
       canvas.style.width = (W * SCALE) + "px";
       canvas.style.height = (canvas.height * SCALE) + "px";
       canvas.style.top = (-ROOM * SCALE) + "px";
@@ -58,7 +103,7 @@
     }
 
     function glintAt(t) {  // where the light is along the strip (0..1), or null
-      if (still) return null;
+      if (still || !kind.glint) return null;
       var k = ((t - GLINT.delay) % GLINT.every) / GLINT.every;
       if (t < GLINT.delay || k < 1 - GLINT.travel) return null;
       var u = (k - (1 - GLINT.travel)) / GLINT.travel;
@@ -69,19 +114,21 @@
       var t = (now - t0) / 1000, dt = Math.min(0.05, (now - prev) / 1000);
       prev = now;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      var n = Math.ceil(W / BRICK);
-      for (var i = 0; i < n; i++) {
-        var gone = broken[i], dy = 0, alpha = 1;
-        if (gone !== undefined) {
-          var age = t - gone;
-          if (age < BACK) continue;
-          if (age < BACK + 0.3) { var k = (age - BACK) / 0.3; dy = -Math.round((1 - k) * 3); alpha = k; }  // settling back in
-          else delete broken[i];
+      var first = Math.floor(-mid / BRICK) - 1, last = Math.ceil((W - mid) / BRICK);
+      for (var r = 0; r < kind.rows; r++) {
+        for (var c = first; c <= last; c++) {
+          var key = c + "," + r, gone = broken[key], dy = 0, alpha = 1;
+          if (gone !== undefined) {
+            var age = t - gone;
+            if (age < BACK) continue;
+            if (age < BACK + 0.3) { var k = (age - BACK) / 0.3; dy = -Math.round((1 - k) * 3); alpha = k; }  // settling back
+            else delete broken[key];
+          }
+          var b = kind.brick(c, r, t);
+          ctx.globalAlpha = alpha;
+          ctx.drawImage(kind.art, b.sx, b.sy, BRICK, TALL, mid + c * BRICK, ROOM + r * TALL + dy, BRICK, TALL);
+          ctx.globalAlpha = 1;
         }
-        var sx = (i % (art.width / BRICK)) * BRICK;
-        ctx.globalAlpha = alpha;
-        ctx.drawImage(art, sx, 0, BRICK, TALL, i * BRICK, ROOM + dy, BRICK, TALL);
-        ctx.globalAlpha = 1;
       }
       var g = glintAt(t);
       if (g !== null) {
@@ -95,17 +142,17 @@
         grad.addColorStop(0.62, "rgba(255,250,225,.35)");
         grad.addColorStop(1, "rgba(255,250,225,0)");
         lctx.fillStyle = grad;
-        lctx.fillRect(0, ROOM, W, TALL);
+        lctx.fillRect(0, ROOM, W, tall);
         lctx.globalCompositeOperation = "destination-in";
         lctx.drawImage(canvas, 0, 0);
         ctx.globalCompositeOperation = "soft-light";
         ctx.drawImage(light, 0, 0);
         ctx.globalCompositeOperation = "source-over";
       }
-      for (var b = bits.length - 1; b >= 0; b--) {
-        var p = bits[b];
+      for (var i = bits.length - 1; i >= 0; i--) {
+        var p = bits[i];
         p.age += dt;
-        if (p.age >= p.life) { bits.splice(b, 1); continue; }
+        if (p.age >= p.life) { bits.splice(i, 1); continue; }
         p.x += p.vx * dt; p.y += p.vy * dt; p.vy += p.g * dt;
         ctx.globalAlpha = Math.min(1, (p.life - p.age) / (p.life * 0.35));
         ctx.fillStyle = "rgb(" + p.col.join(",") + ")";
@@ -124,11 +171,11 @@
       requestAnimationFrame(tick);
     }
 
-    function burst(i) {
-      var cols = shades[i % shades.length], cx = i * BRICK + BRICK / 2, cy = ROOM + TALL / 2;
+    function burst(c, r) {
+      var cols = kind.brick(c, r, 0).shade, cx = mid + c * BRICK + BRICK / 2, cy = ROOM + r * TALL + TALL / 2;
       if (still) return;
-      for (var c = 0; c < CHIPS + 3; c++) {
-        var dust = c >= CHIPS;  // (the last three: a little dust, drifting)
+      for (var n = 0; n < CHIPS + 3; n++) {
+        var dust = n >= CHIPS;  // (the last three: a little dust, drifting)
         var a = -Math.PI / 2 + (Math.random() - 0.5) * (dust ? Math.PI * 2 : Math.PI);
         var v = dust ? 6 + Math.random() * 10 : 30 + Math.random() * 45;
         bits.push({ x: cx + (Math.random() - 0.5) * 10, y: cy + (Math.random() - 0.5) * 4,
@@ -140,11 +187,13 @@
     }
 
     strip.addEventListener("click", function (e) {
-      var r = strip.getBoundingClientRect();
-      var i = Math.floor((e.clientX - r.left) / SCALE / BRICK);
-      if (broken[i] !== undefined) return;
-      broken[i] = (performance.now() - t0) / 1000;
-      burst(i);
+      var box = strip.getBoundingClientRect();
+      var c = Math.floor(((e.clientX - box.left) / SCALE - mid) / BRICK);
+      var r = Math.max(0, Math.min(kind.rows - 1, Math.floor((e.clientY - box.top) / SCALE / TALL)));
+      var key = c + "," + r;
+      if (broken[key] !== undefined) return;
+      broken[key] = (performance.now() - t0) / 1000;
+      burst(c, r);
       if (still) draw(performance.now());
     });
 

@@ -60,6 +60,22 @@ a:hover { color: #fff1c4; }
 .bricks.live { background: none; overflow: visible; overflow-x: clip; cursor: pointer; }  /* (js/bricks.js: breakable) */
 .bricks.live::after { display: none; }
 .bricks-live { position: absolute; left: 0; z-index: 2; pointer-events: none; image-rendering: pixelated; }
+
+/* the seams between the page's worlds: a sector level's bar between its two screens (two rows of the world's tough
+   brick and cargo, js/bricks.js), and The Dugout's board rail round its mine; each centred on the page */
+.bar {
+  position: relative; z-index: 3; height: 48px; cursor: pointer; overflow: visible; overflow-x: clip;
+  background: repeat-x 50% 0 / 1536px 48px; image-rendering: pixelated;
+}
+.bar[data-world="coppercloud"] { background-image: url(art/bars/bar_coppercloud.png); }
+.bar[data-world="stormglass"] { background-image: url(art/bars/bar_stormglass.png); }
+.bar[data-world="tideglass"] { background-image: url(art/bars/bar_tideglass.png); }
+.bar.live { background: none; }
+.rail {
+  position: relative; z-index: 2; height: 30px; image-rendering: pixelated;
+  background: url(art/bars/rail_top.png) repeat-x 50% 0 / 768px 30px;
+}
+.rail.under { background-image: url(art/bars/rail_foot.png); }
 .bricks::after {  /* (now and then the light runs along the course, caught only by the bricks: the logo's shine) */
   content: ""; position: absolute; inset: 0; pointer-events: none;
   -webkit-mask: url(img/bricks.png) repeat-x 0 0 / 960px 24px; mask: url(img/bricks.png) repeat-x 0 0 / 960px 24px;
@@ -97,7 +113,9 @@ h1 {
 
 /* the games */
 .games { padding: 64px 0 0; }
-.section-title { text-align: center; color: var(--gold); font-size: clamp(18px, 3.4vw, 28px); text-shadow: 3px 3px 0 #3a2410; }
+.section-title { text-align: center; color: var(--gold); font-size: clamp(18px, 3.4vw, 28px); text-shadow: 3px 3px 0 #3a2410; line-height: 0; }
+.section-title img { width: calc(var(--w, 0) * 2px); }  /* (the gold bricks at twice size) */
+.section-title .glint { animation-delay: 1.5s; }
 .section-note { text-align: center; color: var(--soft); max-width: 640px; margin: 0 auto 48px; }
 
 .game { display: grid; grid-template-columns: 1.15fr 1fr; gap: 36px; align-items: center; margin: 0 auto 72px; }
@@ -175,6 +193,7 @@ span.status.quiet::before { background-image: url(art/keys/lamp_off.png); }
   content: ""; display: block; height: 300px; margin-bottom: 20px;
   background: url(img/town.png) repeat-x 50% 100% / 1968px 472px, linear-gradient(var(--dusk), #09080f);
   image-rendering: pixelated;
+  -webkit-mask-image: linear-gradient(transparent, #000 120px); mask-image: linear-gradient(transparent, #000 120px);
 }
 /* the flood at the foot (js/flood.js): Tideglass's water rising up the town's foot as the page ends */
 .foot { position: relative; }
@@ -220,6 +239,11 @@ span.status.quiet::before { background-image: url(art/keys/lamp_off.png); }
 .tagline { margin: 4px 0 0; line-height: 0; }
 .tagline img { width: 552px; }
 .tagline .glint { animation-delay: .5s; }
+.cue {  /* (Pocket's way on, pointing down to the games, bobbing as the game's does) */
+  position: absolute; left: 50%; bottom: 46px; z-index: 2; margin-left: -21px; padding: 6px; line-height: 0;
+}
+.cue img { width: 33px; height: 21px; image-rendering: pixelated; filter: drop-shadow(0 3px 0 rgba(5, 10, 18, .6)); }
+.cue:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .sky.short { min-height: clamp(380px, 56vh, 520px); }
 .mark .big.title-about img { width: 579px; }
 .tagline.line-about img { width: 496px; }
@@ -294,6 +318,7 @@ span.status.quiet::before { background-image: url(art/keys/lamp_off.png); }
 @keyframes course { 0%, 78% { background-position: -150px 0; } 100% { background-position: calc(100% + 150px) 0; } }
 @keyframes stamp { from { transform: translateY(-6px); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes tide { to { background-position: 0 calc(var(--frame) * -8); } }
+@keyframes bob { from { transform: translateY(-3px); } to { transform: translateY(3px); } }
 @keyframes sweep { from { background-position: 100% 0; opacity: 1; } to { background-position: 0 0; opacity: 1; } }
 @keyframes lantern { from { opacity: .82; } to { opacity: 1; } }
 
@@ -314,6 +339,11 @@ span.status.quiet::before { background-image: url(art/keys/lamp_off.png); }
   .tagline img { width: 184px; }
   .mark .big.title-about img { width: 193px; }
   .tagline.line-about img { width: 248px; }
+  .section-title img { width: calc(var(--w, 0) * 1px); }
+  .bricks, .bar, .rail { --scale: 2; }  /* (the page's brickwork at twice size on a phone) */
+  .bricks { height: 16px; background-size: 640px 16px; }
+  .bar { height: 32px; background-size: 1024px 32px; }
+  .rail { height: 20px; background-size: 512px 20px; }
   a.status { font-size: 10px; line-height: 10px; padding-top: 13px; }
   a.status:active { padding-top: 17px; }
   .crew-anim { width: 50px; height: 50px; background-size: 4800px 50px; }
@@ -329,7 +359,7 @@ span.status.quiet::before { background-image: url(art/keys/lamp_off.png); }
   .ways ul { grid-template-columns: 1fr; }
   .board { border-width: 21px; border-image-width: 21px; }
   .board.moss::before { top: -27px; height: 24px; background-size: 256px 24px; }
-  .foot::before { height: 200px; background-size: 984px 236px, auto; }
+  .foot::before { height: 200px; background-size: 984px 236px, auto; -webkit-mask-image: linear-gradient(transparent, #000 60px); mask-image: linear-gradient(transparent, #000 60px); }
   .flood { --band: 200px; --rise: 24; --step: 2; --frame: 22px; }
   .flood i { background-size: 512px 464px; background-position: 0 11px; }
   .flood i::before { height: 22px; background-size: 512px 176px; }
@@ -339,6 +369,7 @@ span.status.quiet::before { background-image: url(art/keys/lamp_off.png); }
   .nav a { transition: background .15s, color .15s, border-color .15s; }
   a.status:hover::after { animation: sweep .7s ease-out; }
   .bricks::after { animation: course 12s ease-in-out 3s infinite; }
+  .cue img { animation: bob .52s steps(3, jump-none) infinite alternate; }
   .flood i::before { animation: tide 1s steps(8) infinite; }
   .shots img { transition: transform .18s ease-out, box-shadow .18s ease-out; }
   .shots img:hover { transform: translateY(-4px); box-shadow: 0 0 0 2px var(--gold), 0 6px 0 2px rgba(5, 10, 18, .55); z-index: 1; }
